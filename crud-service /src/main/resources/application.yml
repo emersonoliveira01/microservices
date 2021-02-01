@@ -1,0 +1,73 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crud
+    username: postgres
+    password: unigeo@102090
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10 #Quantidade maxima de conexoes entre ativas e ociosas
+      minimum-idle: 2 #Quantidade Minima de conexao ociosa mantida no pool pelo Hikari
+      connection-timeout: 30000 #(2 Segundos) tempo limite aguardado pelo getConnection, criar nova conexao.
+      idle-timeout: 300000 #(5 Minutos) Tempo maximo que uma conexao pode permanecer ociosa
+      max-lifetime: 300000 #(30 Minutos) Tempo de vida máximo de uma conexão no pool
+      auto-commit: true #default auto-commit behavior.
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    database: POSTGRESQL
+    hibernate.ddl-auto: update
+    properties.hibernate.temp.use_jdbc_metadata_defaults: false
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: "admin"
+    password: "admin"
+
+  # spring boot admin server
+  boot:
+    admin:
+      client:
+        url: http://cloud-monitoring
+
+crud:
+  rabbitmq:
+    exchange: crud.exchange
+    routingkey: crud.produto.routingkey
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-discovery:8081/eureka/
+
+# actuator
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+info:
+  app:
+    name: ${spring.application.name}
+
+# Logging
+logging:
+  file: logs/app.log
+  level.org.hibernate: INFO
+  level.org.hibernate.SQL: DEBUG
+  level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  level.org.springframework.web: INFO
+
+
+
